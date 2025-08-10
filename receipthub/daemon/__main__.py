@@ -3,6 +3,8 @@ import sys
 import time
 import signal
 
+from receipthub.config.loader import load_config, summarize_config, ConfigError
+
 APP_NAME = "ReceiptHub"
 DEFAULT_CONFIG = "/etc/receipthub/config.yaml"
 
@@ -14,18 +16,25 @@ def _handle_signal(signum, frame):
     _running = False
 
 def main():
-    # Config path is not parsed yet; we just display where we'd read from
-    cfg = os.environ.get("RECEIPTHUB_CONFIG", DEFAULT_CONFIG)
-    exists = "present" if os.path.exists(cfg) else "missing"
+    cfg_path = os.environ.get("RECEIPTHUB_CONFIG", DEFAULT_CONFIG)
     print(f"{APP_NAME} daemon starting", flush=True)
-    print(f"Config path: {cfg} ({exists})", flush=True)
-    print("No-op mode: not accepting jobs yet. Press Ctrl+C to exit.", flush=True)
 
-    # Graceful shutdown hooks
+    # Load & validate config
+    try:
+        cfg = load_config(cfg_path)
+    except ConfigError as e:
+        print(f"Config error: {e}", file=sys.stderr, flush=True)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Failed to load config: {e!r}", file=sys.stderr, flush=True)
+        sys.exit(1)
+
+    print(summarize_config(cfg), flush=True)
+    print("Idle (no sockets/DB yet). Press Ctrl+C to exit.", flush=True)
+
     signal.signal(signal.SIGINT, _handle_signal)
     signal.signal(signal.SIGTERM, _handle_signal)
 
-    # Idle loop (placeholder for server/worker tasks)
     while _running:
         time.sleep(1)
 
