@@ -1,0 +1,24 @@
+# ReceiptHub sample config (not parsed yet)
+socket:
+  path: /run/receipthub/receipthub.sock
+  mode: 660
+  group: receipthub
+
+defaults:
+  printer: default
+  cols: 48
+  max_width_px: 384
+  feed_lines: 3
+  retry_backoff: [1, 5, 30, 120, 600]
+  max_attempts: 5
+  emoji_map: /etc/receipthub/emoji_map.json
+
+printers:
+  - name: default
+    type: escpos-network
+    host: 192.168.0.187
+    port: 9100
+    cols: 48
+    max_width_px: 384
+    supports_images: true
+    darkness: null

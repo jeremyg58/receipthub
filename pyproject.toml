@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "receipthub"
+version = "0.1.0"
+description = "Local print gateway for ESC/POS receipt printers with a durable queue"
+requires-python = ">=3.11"
+
+# We'll add real runtime dependencies later when we implement them.
+dependencies = []
+
+[project.scripts]
+rh = "receipthub.cli.main:main"
