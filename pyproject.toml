@@ -9,7 +9,14 @@ description = "Local print gateway for ESC/POS receipt printers with a durable q
 requires-python = ">=3.11"
 
 # We'll add real runtime dependencies later when we implement them.
-dependencies = []
+dependencies = ["PyYAML>=6.0.1"]
 
 [project.scripts]
 rh = "receipthub.cli.main:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["receipthub*"]
+exclude = ["tests*", "system*", "config*", ".github*"]
